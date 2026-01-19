@@ -1,0 +1,30 @@
+sections:
+  type: objects
+  default: []
+  schema:
+    properties:
+      title:
+        type: string
+        required: true
+        validations:
+          min_length: 1
+          max_length: 500
+      category_ids:
+        type: categories
+        required: true
+
+show_other_section:
+  type: bool
+  default: true
+
+other_section_title:
+  type: string
+  default: "en:Other|ru:Другое|de:Sonstiges|fr:Autres|es:Otros|zh_CN:其他"
+
+enable_collapse:
+  type: bool
+  default: false
+
+fallback_locale:
+  type: string
+  default: "en"
