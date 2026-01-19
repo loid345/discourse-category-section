@@ -204,7 +204,7 @@ export default apiInitializer("1.14.0", (api) => {
     const isTableLayout = container.tagName === "TBODY";
     const itemSelector = isTableLayout
       ? "tr[data-category-id]"
-      : "[data-category-id]";
+      : ":scope > .category-box, :scope > .category-box-with-topics";
 
     const categoryIndex = new Map();
 
