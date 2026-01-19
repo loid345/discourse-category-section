@@ -1,0 +1,15 @@
+en:
+  theme_metadata:
+    description: |
+      Organize categories into visual sections on the homepage.
+      Supports multilingual section titles.
+    settings:
+      sections: "Sections configuration"
+      show_other_section: "Show section for unassigned categories"
+      other_section_title: "Title for unassigned categories (format: en:Other|ru:Другое)"
+      enable_collapse: "Allow collapsing sections"
+      fallback_locale: "Fallback language if translation not found"
+    schema:
+      sections:
+        title: "Section title (format: en:English|ru:Русский or plain text)"
+        category_ids: "Categories (drag to reorder)"

@@ -1,0 +1,109 @@
+body.category-sections--loading {
+  .category-list tbody,
+  .category-boxes,
+  .category-boxes-with-topics {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+}
+
+.category-section-header {
+  display: block;
+  width: 100%;
+  margin-block-start: 1.75em;
+  clear: both;
+
+  &:first-child {
+    margin-block-start: 0;
+  }
+}
+
+tr.category-section-header {
+  display: table-row;
+  background: transparent !important;
+
+  > td {
+    padding-block: 1.25em 0.5em;
+    padding-inline: 0.5em;
+    border-block-end: none;
+  }
+
+  &:first-child > td {
+    padding-block-start: 0.25em;
+  }
+}
+
+.category-section-title {
+  display: inline-block;
+  font-size: var(--font-down-1);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--primary-high);
+  padding-block-end: 0.35em;
+  border-block-end: 3px solid var(--tertiary);
+}
+
+.category-section-header--other .category-section-title {
+  color: var(--primary-medium);
+  border-color: var(--primary-low);
+}
+
+.category-section-header--collapsible {
+  cursor: pointer;
+  user-select: none;
+
+  .category-section-title::before {
+    content: "";
+    display: inline-block;
+    width: 0.5em;
+    height: 0.5em;
+    margin-inline-end: 0.5em;
+    border-inline-end: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+    vertical-align: middle;
+  }
+
+  &:hover .category-section-title {
+    color: var(--tertiary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--tertiary);
+    outline-offset: 2px;
+  }
+}
+
+.category-section-header--collapsed .category-section-title::before {
+  transform: rotate(-45deg);
+}
+
+.category-section-item--hidden {
+  display: none !important;
+}
+
+.category-boxes,
+.category-boxes-with-topics {
+  .category-section-header {
+    flex-basis: 100%;
+    padding-block: 1.25em 0.25em;
+    padding-inline: 0.5em;
+    box-sizing: border-box;
+
+    &:first-child {
+      padding-block-start: 0;
+    }
+  }
+}
+
+@media (max-width: 750px) {
+  .category-section-header {
+    margin-block-start: 1.25em;
+  }
+
+  .category-section-title {
+    font-size: var(--font-down-2);
+  }
+}
