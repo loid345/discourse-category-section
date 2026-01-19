@@ -2,21 +2,38 @@ import { apiInitializer } from "discourse/lib/api";
 import { schedule } from "@ember/runloop";
 import I18n from "discourse-i18n";
 
+const CATEGORY_CONTAINER_SELECTOR =
+  ".category-list tbody, .category-boxes, .category-boxes-with-topics";
+const CATEGORY_ITEM_SELECTOR = {
+  table: "tr[data-category-id]",
+  box: ":scope > .category-box, :scope > .category-box-with-topics",
+};
+const CATEGORY_PAGE_CLASSES = [
+  "navigation-categories",
+  "discovery-categories",
+];
+const DEFAULT_FALLBACK_LOCALE = "en";
+const LOCALE_FORMAT_REGEX = /^[a-z]{2}(_[A-Z]{2})?:/;
+const LOCALE_SEGMENT_REGEX = /^([a-z]{2}(?:_[A-Z]{2})?):(.+)$/;
+const CATEGORY_LINK_REGEX = /\/c\/(?:[^/]+\/)*(\d+)/;
+
 export default apiInitializer("1.14.0", (api) => {
   const isCategoriesHomepage = () => {
-    return (
-      document.body.classList.contains("navigation-categories") ||
-      document.body.classList.contains("discovery-categories")
+    return CATEGORY_PAGE_CLASSES.some((className) =>
+      document.body.classList.contains(className)
     );
   };
 
-  const parseLocalizedTitle = (titleString, fallbackLocale = "en") => {
+  const parseLocalizedTitle = (
+    titleString,
+    fallbackLocale = DEFAULT_FALLBACK_LOCALE
+  ) => {
     if (!titleString) {
       return "";
     }
 
     const hasLocaleFormat =
-      /^[a-z]{2}(_[A-Z]{2})?:/.test(titleString) || titleString.includes("|");
+      LOCALE_FORMAT_REGEX.test(titleString) || titleString.includes("|");
 
     if (!hasLocaleFormat) {
       return titleString;
@@ -26,7 +43,7 @@ export default apiInitializer("1.14.0", (api) => {
     const parts = titleString.split("|");
 
     parts.forEach((part) => {
-      const match = part.match(/^([a-z]{2}(?:_[A-Z]{2})?):(.+)$/);
+      const match = part.match(LOCALE_SEGMENT_REGEX);
       if (match) {
         const [, locale, text] = match;
         translations[locale] = text.trim();
@@ -75,7 +92,7 @@ export default apiInitializer("1.14.0", (api) => {
       return siteSettings.default_locale;
     }
 
-    return settings.fallback_locale || "en";
+    return settings.fallback_locale || DEFAULT_FALLBACK_LOCALE;
   };
 
   const getOtherSectionTitle = () => {
@@ -97,7 +114,7 @@ export default apiInitializer("1.14.0", (api) => {
 
     const link = node.querySelector("a[href*='/c/']");
     if (link) {
-      const match = link.href.match(/\/c\/(?:[^/]+\/)*(\d+)/);
+      const match = link.href.match(CATEGORY_LINK_REGEX);
       if (match) {
         return match[1];
       }
@@ -182,9 +199,7 @@ export default apiInitializer("1.14.0", (api) => {
       return;
     }
 
-    const container = document.querySelector(
-      ".category-list tbody, .category-boxes, .category-boxes-with-topics"
-    );
+    const container = document.querySelector(CATEGORY_CONTAINER_SELECTOR);
 
     if (!container || container.dataset.sectionsProcessed === "true") {
       document.body.classList.remove("category-sections--loading");
@@ -203,8 +218,8 @@ export default apiInitializer("1.14.0", (api) => {
 
     const isTableLayout = container.tagName === "TBODY";
     const itemSelector = isTableLayout
-      ? "tr[data-category-id]"
-      : ":scope > .category-box, :scope > .category-box-with-topics";
+      ? CATEGORY_ITEM_SELECTOR.table
+      : CATEGORY_ITEM_SELECTOR.box;
 
     const categoryIndex = new Map();
 
@@ -221,7 +236,7 @@ export default apiInitializer("1.14.0", (api) => {
     }
 
     const fragment = document.createDocumentFragment();
-    const fallbackLocale = settings.fallback_locale || "en";
+    const fallbackLocale = settings.fallback_locale || DEFAULT_FALLBACK_LOCALE;
 
     sections.forEach((section) => {
       const categoryIds = normalizeCategoryIds(section.category_ids);
@@ -233,10 +248,7 @@ export default apiInitializer("1.14.0", (api) => {
         return;
       }
 
-      const localizedTitle = parseLocalizedTitle(
-        section.title,
-        fallbackLocale
-      );
+      const localizedTitle = parseLocalizedTitle(section.title, fallbackLocale);
       const header = createSectionHeader(localizedTitle, isTableLayout);
       fragment.appendChild(header);
 
@@ -274,9 +286,7 @@ export default apiInitializer("1.14.0", (api) => {
   };
 
   const resetSections = () => {
-    const container = document.querySelector(
-      ".category-list tbody, .category-boxes, .category-boxes-with-topics"
-    );
+    const container = document.querySelector(CATEGORY_CONTAINER_SELECTOR);
     if (container) {
       container.dataset.sectionsProcessed = "false";
     }
