@@ -1,0 +1,12 @@
+name: Theme CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  theme-check:
+    uses: discourse/.github/.github/workflows/theme-check.yml@main

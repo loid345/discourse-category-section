@@ -1,0 +1,21 @@
+javascript:
+  - changed-files:
+      - any-glob-to-any-file: "javascripts/**/*"
+
+styles:
+  - changed-files:
+      - any-glob-to-any-file: "assets/**/*"
+
+locales:
+  - changed-files:
+      - any-glob-to-any-file: "locales/**/*"
+
+settings:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "settings.yml"
+          - "about.json"
+
+metadata:
+  - changed-files:
+      - any-glob-to-any-file: "README.md"
